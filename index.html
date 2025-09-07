@@ -4,29 +4,106 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nexus Core: AI Code Synthesis</title>
+    <title>Enterprise AI UI Component Generation Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <style>
+      :root {
+        /* Quantum White Theme */
+        --quantum-white: #ffffff;
+        --neural-gray-50: #f8fafc;
+        --neural-gray-100: #f1f5f9;
+        --neural-gray-200: #e2e8f0;
+        --neural-gray-700: #334155;
+        --neural-gray-800: #1e293b;
+        --neural-gray-900: #0f172a;
+        
+        /* AI Accent Colors */
+        --ai-blue-primary: #2563eb;
+        --ai-purple-secondary: #7c3aed;
+        --ai-cyan-accent: #06b6d4;
+        --ai-emerald-success: #10b981;
+        --ai-amber-warning: #f59e0b;
+        --ai-red-error: #ef4444;
+        
+        /* Energy Gradients */
+        --neural-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        --energy-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      
+      body, #root {
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        font-family: 'Inter', sans-serif; /* A more modern font */
+      }
+      
+      /* Webkit scrollbar styling for a consistent look */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: var(--neural-gray-800); }
+      ::-webkit-scrollbar-thumb { background: var(--neural-gray-700); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+      /* Animations */
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      .animate-fade-in {
-        animation: fadeIn 0.5s ease-out forwards;
+      .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
+      @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(10px); }
       }
-       body, #root {
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
+      .animate-fade-out { animation: fadeOut 0.5s ease-out forwards; }
+      
+      @keyframes quantum-pulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+        50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(37, 99, 235, 0); }
       }
-      @keyframes pulse-glow {
-        0%, 100% { box-shadow: 0 0 20px rgba(120, 81, 222, 0.4), 0 0 10px rgba(79, 70, 229, 0.3); }
-        50% { box-shadow: 0 0 40px rgba(120, 81, 222, 0.7), 0 0 20px rgba(79, 70, 229, 0.5); }
+      .animate-quantum-pulse { animation: quantum-pulse 2s infinite; }
+
+      @keyframes neural-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
       }
-      .animate-pulse-glow {
-        animation: pulse-glow 3s infinite ease-in-out;
+      .animate-neural-flow {
+        background-size: 200% 200%;
+        animation: neural-flow 3s ease infinite;
+      }
+      
+      @keyframes holographic-scan {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+      }
+      .holographic-scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--ai-cyan-accent), transparent);
+        animation: holographic-scan 3s infinite linear;
+        opacity: 0.7;
+      }
+
+      /* Neural line animation for AgentWorkflow */
+      @keyframes draw-line {
+        to { stroke-dashoffset: 0; }
+      }
+      .neural-line {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: draw-line 1.5s ease-out forwards;
+      }
+
+      /* Custom selection color */
+      ::selection {
+        background-color: var(--ai-purple-secondary);
+        color: var(--quantum-white);
       }
     </style>
   <script type="importmap">
@@ -40,7 +117,7 @@
 }
 </script>
 </head>
-  <body class="bg-gray-50 selection:bg-purple-500 selection:text-white">
+  <body class="bg-neural-gray-900 text-neural-gray-50 selection:bg-purple-500 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

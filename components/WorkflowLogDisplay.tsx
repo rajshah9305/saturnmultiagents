@@ -1,6 +1,7 @@
 
+
 import React, { useRef, useEffect } from 'react';
-// FIX: Added WorkflowLog and AgentRole to types.ts to resolve import error.
+// FIX: Added WorkflowLog to types.ts to resolve import error.
 import { WorkflowLog, AgentRole } from '../types';
 import { UserIcon } from './icons/UserIcon';
 import { BotIcon } from './icons/BotIcon';
@@ -25,12 +26,15 @@ const getLogStyles = (type: WorkflowLog['type']) => {
     }
 }
 
+// FIX: Replaced non-existent AgentRoles with ones defined in types.ts.
 const ROLE_COLORS: Record<string, string> = {
-    [AgentRole.CEO]: 'border-l-purple-400',
-    [AgentRole.CTO]: 'border-l-blue-400',
-    [AgentRole.SENIOR_ENGINEER]: 'border-l-teal-400',
-    [AgentRole.JUNIOR_ENGINEER]: 'border-l-yellow-400',
-    [AgentRole.DEVOPS]: 'border-l-orange-400',
+    [AgentRole.Orchestrator]: 'border-l-purple-400',
+    [AgentRole.DesignArchitect]: 'border-l-blue-400',
+    [AgentRole.StyleCurator]: 'border-l-teal-400',
+    [AgentRole.CodeGenerator]: 'border-l-yellow-400',
+    [AgentRole.QualityAssurance]: 'border-l-orange-400',
+    [AgentRole.PerformanceOptimizer]: 'border-l-green-400',
+    [AgentRole.SecurityAuditor]: 'border-l-red-400',
     'User': 'border-l-indigo-400',
 };
 
