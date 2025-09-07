@@ -7,43 +7,66 @@ if (!process.env.API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+interface GeminiApiOptions {
+  isJson?: boolean;
+  disableThinking?: boolean;
+}
+
+// Define a type for the configuration to avoid using 'any'
+interface GeminiGenerateContentConfig {
+  systemInstruction: string;
+  responseMimeType: "application/json" | "text/plain";
+  temperature: number;
+  topP: number;
+  thinkingConfig?: { thinkingBudget: number };
+}
+
+
 export async function callGeminiApi(
-    agent: Pick<Agent, 'name' | 'systemPrompt'>, 
+    agent: Pick<Agent, 'name' | 'systemPrompt' | 'model'>, 
     prompt: string, 
     context: string, 
-    isJson: boolean = false
+    options: GeminiApiOptions = {}
 ): Promise<string> {
+  const { isJson = false, disableThinking = false } = options;
   const fullPrompt = `${prompt}\n\n## Project Context:\n${context}`;
+  
+  const config: GeminiGenerateContentConfig = {
+    systemInstruction: agent.systemPrompt,
+    responseMimeType: isJson ? "application/json" : "text/plain",
+    temperature: 0.7,
+    topP: 0.95,
+  };
+
+  if (disableThinking && agent.model === 'gemini-2.5-flash') {
+    config.thinkingConfig = { thinkingBudget: 0 };
+  }
   
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: agent.model,
       contents: fullPrompt,
-      config: {
-        systemInstruction: agent.systemPrompt,
-        responseMimeType: isJson ? "application/json" : "text/plain",
-        temperature: 0.7,
-        topP: 0.95,
-      }
+      config: config
     });
 
     const text = response.text;
     if (!text) {
-        throw new Error('Received an empty response from the API.');
+        throw new Error(`Agent ${agent.name} returned an empty response.`);
     }
     
-    return text;
+    return text.trim();
 
-  } catch (error) {
-    console.error(`Error processing agent task for ${agent.name}:`, error);
+  } catch (error: unknown) {
+    console.error(`Error in callGeminiApi for agent ${agent.name}:`, error);
     if (error instanceof Error) {
-        // Attempt to parse Google specific error messages if available
-        const googleError = (error as any).error;
-        if (googleError && googleError.message) {
-            throw new Error(`Gemini API Error: ${googleError.message}`);
+        // Attempt to find a more specific error message from Google's error structure
+        const gError = error as any;
+        if (gError.cause?.error?.message) {
+             throw new Error(`API Error from ${agent.name}: ${gError.cause.error.message}`);
         }
-        throw new Error(`Gemini API Error: ${error.message}`);
+        // Fallback to the standard error message
+        throw new Error(`API Error from ${agent.name}: ${error.message}`);
     }
-    throw new Error('An unknown error occurred while communicating with the Gemini API.');
+    throw new Error(`An unknown API error occurred with agent ${agent.name}.`);
   }
 };

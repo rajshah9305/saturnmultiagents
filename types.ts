@@ -1,9 +1,8 @@
-
 import React from 'react';
 
 export type AgentStatus = 'idle' | 'working' | 'thinking' | 'completed' | 'error';
 export type AgentMood = 'focused' | 'inspired' | 'analytical' | 'contemplative' | 'determined' | 'vigilant' | 'enlightened';
-export type SystemState = 'idle' | 'initializing' | 'running' | 'analyzing' | 'deploying' | 'completed' | 'error' | 'stopping' | 'ready';
+export type SystemState = 'idle' | 'initializing' | 'analyzing' | 'planning' | 'generating' | 'completed' | 'error';
 
 export interface Agent {
   id: string;
@@ -18,33 +17,9 @@ export interface Agent {
   systemPrompt: string;
   specialties: string[];
   status: AgentStatus;
+  currentTask: string;
   lastThought: string;
   workingMemory: { prompt: string; response: string; timestamp: string }[];
-}
-
-export interface ProjectConfig {
-    name: string;
-    description: string;
-    type: 'fullstack' | 'frontend' | 'api';
-    framework: 'react' | 'vue' | 'next' | 'nuxt' | 'svelte';
-    database: 'postgresql' | 'mongodb' | 'mysql' | 'sqlite' | 'supabase';
-    features: string[];
-    complexity: 'simple' | 'intermediate' | 'advanced' | 'enterprise';
-    deployment: 'vercel' | 'netlify' | 'railway' | 'aws' | 'docker';
-    aiPersonality: 'collaborative' | 'innovative' | 'conservative' | 'experimental';
-}
-
-export interface NlpInsights {
-    features: string[];
-    complexity: string;
-    suggestedTech: string[];
-    userTypes: string[];
-    businessGoals: string[];
-    risks: string[];
-    opportunities: string[];
-    timeline: string;
-    scalabilityNeeds: string;
-    securityRequirements: string;
 }
 
 export interface GeneratedFile {
@@ -54,70 +29,32 @@ export interface GeneratedFile {
     agentId: string;
     timestamp: string;
     size: number;
-    planning: string;
-    reflection: string;
-    collaborators: string[];
 }
 
-export interface Message {
-    id: number;
-    agent: string;
-    agentId: string;
-    message: string;
-    timestamp: string;
-    type: 'info' | 'working' | 'thinking' | 'success' | 'error' | 'system' | 'planning';
-    color: string;
-}
-
-export interface AgentConversation {
-    message: string;
-    type: 'thought' | 'planning' | 'reflection' | 'error';
-    timestamp: string;
-    id: number;
-}
-
-export interface Collaboration {
-    from: string;
-    to: string;
-    type: 'created' | 'reviewed' | 'consulted';
-    timestamp: string;
-}
-
-export interface CodebaseAnalysis {
-    qualityScore?: number;
-    architectureStrength?: string;
-    securityScore?: string;
-    maintainability?: string;
-}
-
-export interface ProjectInsight {
-    type: 'opportunity' | 'risk' | 'innovation';
-    title: string;
+export interface BlueprintNode {
+    fileName: string;
     description: string;
-    priority: 'high' | 'medium' | 'low';
-    impact: string;
 }
 
+// FIX: Added missing types to resolve import errors.
 export interface Workflow {
-    name: string;
-    phases: string[];
-    agents: string[];
-    estimatedTime: string;
+  name: string;
+  phases: string[];
+  agents: string[];
+  estimatedTime: string;
 }
 
-// FIX: Added missing AgentRole enum for WorkflowLogDisplay component.
 export enum AgentRole {
-    CEO = 'CEO',
-    CTO = 'CTO',
+    CEO = 'Project CEO',
+    CTO = 'Chief Technology Officer',
     SENIOR_ENGINEER = 'Senior Engineer',
     JUNIOR_ENGINEER = 'Junior Engineer',
-    DEVOPS = 'DevOps',
+    DEVOPS = 'DevOps Engineer',
 }
 
-// FIX: Added missing WorkflowLog interface for WorkflowLogDisplay component.
 export interface WorkflowLog {
-  id: number;
-  agentRole: AgentRole | 'User';
+  id: string;
   type: 'info' | 'prompt' | 'output' | 'error' | 'system';
+  agentRole: AgentRole | 'User';
   message: string;
 }
