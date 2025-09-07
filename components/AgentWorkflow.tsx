@@ -8,86 +8,155 @@ interface AgentWorkflowProps {
 }
 
 const AgentWorkflow = ({ statuses, onCancel }: AgentWorkflowProps) => {
-    const positions = [
-      { top: '15%', left: '50%', transform: 'translateX(-50%)' }, // Orchestrator
-      { top: '35%', left: '25%', transform: 'translate(-50%, -50%)' }, // Design Architect
-      { top: '35%', left: '75%', transform: 'translate(-50%, -50%)' }, // Aesthetic Curator
-      { top: '65%', left: '25%', transform: 'translate(-50%, -50%)' }, // Code Generator
-      { top: '65%', left: '75%', transform: 'translate(-50%, -50%)' }, // QA Guardian
-      { top: '85%', left: '40%', transform: 'translate(-50%, -50%)' }, // Performance
-      { top: '85%', left: '60%', transform: 'translate(-50%, -50%)' }, // Security
-    ];
-    
-    // [from, to] indices of agents in the AGENTS array
-    const connections = [
-        [0, 1], [0, 2], // Orchestrator to Design/Aesthetic
-        [1, 3], [2, 3], // Design/Aesthetic to Code Gen
-        [3, 4], [3, 5], [3, 6] // Code Gen to QA/Perf/Sec
+
+    const connections: [number, number][] = [
+        [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6]
     ];
 
-    const getStatusStyles = (status: AgentStatus) => {
+    const centerAgent = AGENTS[0];
+    const orbitalAgents = AGENTS.slice(1);
+    const radius = 35; // as a percentage of height
+    const agentPositions = [
+        { top: '50%', left: '50%' }, // Orchestrator
+        ...orbitalAgents.map((_, index) => {
+            const angle = (index / orbitalAgents.length) * 2 * Math.PI - (Math.PI / 2); // Start from top
+            const top = 50 + radius * Math.sin(angle);
+            const left = 50 + (radius * 1.1) * Math.cos(angle); // Use 1.1 ratio for wider ellipse
+            return { top: `${top}%`, left: `${left}%` };
+        })
+    ];
+
+    const getNodeClasses = (status: AgentStatus) => {
+        const base = 'agent-node';
+        const statusClass = `status-${status}`;
+        const isActive = status !== 'dormant' && status !== 'completed';
+        
+        let colorClass = 'border-neural-gray-700/50';
+        let glowStyle = {};
+
         switch (status) {
-            case 'initializing': return 'border-ai-blue-primary/80 shadow-[0_0_20px_var(--ai-blue-primary)] animate-pulse';
-            case 'analyzing': return 'border-ai-blue-primary/80 shadow-[0_0_20px_var(--ai-blue-primary)]';
-            case 'creating': return 'border-ai-purple-secondary/80 shadow-[0_0_25px_var(--ai-purple-secondary)] animate-quantum-pulse';
-            case 'validating': return 'border-ai-amber-warning/80 shadow-[0_0_20px_var(--ai-amber-warning)]';
-            case 'optimizing': return 'border-ai-cyan-accent/80 shadow-[0_0_20px_var(--ai-cyan-accent)]';
-            case 'completed': return 'border-ai-emerald-success/80';
-            case 'error': return 'border-ai-red-error/80 shadow-[0_0_20px_var(--ai-red-error)]';
-            default: return 'border-neural-gray-700'; // dormant
+            case 'initializing':
+            case 'analyzing':
+                colorClass = 'border-ai-blue-primary';
+                glowStyle = { 'color': 'var(--ai-blue-primary)', 'boxShadow': '0 0 24px var(--ai-blue-primary), inset 0 0 8px var(--ai-blue-primary)'};
+                break;
+            case 'creating':
+                colorClass = 'border-ai-purple-secondary';
+                glowStyle = { 'color': 'var(--ai-purple-secondary)', 'boxShadow': '0 0 24px var(--ai-purple-secondary), inset 0 0 8px var(--ai-purple-secondary)' };
+                break;
+            case 'validating':
+                colorClass = 'border-ai-amber-warning';
+                glowStyle = { 'color': 'var(--ai-amber-warning)', 'boxShadow': '0 0 24px var(--ai-amber-warning), inset 0 0 8px var(--ai-amber-warning)'};
+                break;
+            case 'optimizing':
+                colorClass = 'border-ai-cyan-accent';
+                glowStyle = { 'color': 'var(--ai-cyan-accent)', 'boxShadow': '0 0 24px var(--ai-cyan-accent), inset 0 0 8px var(--ai-cyan-accent)'};
+                break;
+            case 'completed':
+                colorClass = 'border-ai-emerald-success';
+                break;
+            case 'error':
+                colorClass = 'border-ai-red-error';
+                glowStyle = { 'color': 'var(--ai-red-error)', 'boxShadow': '0 0 24px var(--ai-red-error), inset 0 0 8px var(--ai-red-error)'};
+                break;
         }
+
+        return {
+            wrapper: `${base} ${statusClass} ${isActive ? 'status-active' : ''}`,
+            ring: `${colorClass} ${isActive ? 'agent-glow' : ''}`,
+            glowStyle: isActive ? glowStyle : {}
+        };
     };
-    
+
     return (
-      <div className="fixed inset-0 bg-neural-gray-900/90 backdrop-blur-xl z-50 flex flex-col items-center justify-center animate-fade-in">
-        <div className="w-full h-full relative">
-            {/* Neural Lines */}
-            <svg className="absolute inset-0 w-full h-full" style={{ zIndex: -1 }}>
-                <defs>
-                    <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="var(--ai-blue-primary)" />
-                        <stop offset="100%" stopColor="var(--ai-purple-secondary)" />
-                    </linearGradient>
-                </defs>
-                {connections.map(([from, to], i) => {
-                    const fromAgent = AGENTS[from];
-                    const toAgent = AGENTS[to];
-                     if (!statuses[fromAgent.id] || statuses[fromAgent.id] === 'dormant' || !statuses[toAgent.id] || statuses[toAgent.id] === 'dormant') {
-                        return null;
-                     }
+        <div className="fixed inset-0 bg-neural-gray-900/90 backdrop-blur-xl z-50 flex flex-col items-center justify-center animate-fade-in">
+            <div className="absolute inset-0 workflow-grid-bg"></div>
+            <div className="w-full h-full relative">
+                
+                {/* Connections and Pulses */}
+                <svg className="absolute inset-0 w-full h-full overflow-visible" style={{ transform: 'scale(1.1)' }}>
+                    <defs>
+                        <linearGradient id="path-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
+                            <stop offset="0%" stopColor="var(--ai-cyan-accent)" />
+                            <stop offset="100%" stopColor="var(--ai-purple-secondary)" />
+                        </linearGradient>
+                         <filter id="glow">
+                            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <g transform={`translate(-${50} -${50}) scale(${window.innerWidth / 100} ${window.innerHeight / 100})`}>
+                        {connections.map(([from, to]) => {
+                            const fromAgent = AGENTS[from];
+                            const toAgent = AGENTS[to];
+                            const pathId = `path-${from}-${to}`;
+                            const isActive = statuses[fromAgent.id] && statuses[fromAgent.id] !== 'dormant' && statuses[toAgent.id] && statuses[toAgent.id] !== 'dormant';
+                            
+                            const p1 = { x: parseFloat(agentPositions[from].left), y: parseFloat(agentPositions[from].top) };
+                            const p2 = { x: parseFloat(agentPositions[to].left), y: parseFloat(agentPositions[to].top) };
+
+                            return (
+                                <g key={pathId} className={`transition-opacity duration-500 ${isActive ? 'opacity-50' : 'opacity-0'}`}>
+                                    <line
+                                        x1={p1.x} y1={p1.y}
+                                        x2={p2.x} y2={p2.y}
+                                        stroke="var(--neural-gray-700)"
+                                        strokeWidth="0.1"
+                                    />
+                                     {isActive && (
+                                        <line
+                                            x1={p1.x} y1={p1.y}
+                                            x2={p2.x} y2={p2.y}
+                                            stroke="url(#path-gradient)"
+                                            strokeWidth="0.2"
+                                            className="data-flow-path"
+                                            filter="url(#glow)"
+                                        />
+                                     )}
+                                </g>
+                            );
+                        })}
+                    </g>
+                </svg>
+
+                {/* Agent Nodes */}
+                {AGENTS.map((agent, index) => {
+                    const status = statuses[agent.id] || 'dormant';
+                    const { wrapper, ring, glowStyle } = getNodeClasses(status);
+                    
                     return (
-                        <line
-                            key={`${from}-${to}`}
-                            x1={positions[from].left} y1={positions[from].top}
-                            x2={positions[to].left} y2={positions[to].top}
-                            stroke="url(#line-gradient)"
-                            strokeWidth="2"
-                            opacity="0.5"
-                            className="neural-line"
-                            style={{ animationDelay: `${i * 0.2}s` }}
-                        />
+                        <div
+                            key={agent.id}
+                            className={`absolute -translate-x-1/2 -translatey-1/2 w-36 h-36 ${wrapper}`}
+                            style={agentPositions[index]}
+                        >
+                            <div className="relative w-full h-full flex flex-col items-center justify-center p-3 text-center">
+                                <div className="absolute inset-0 rounded-full agent-node-core"></div>
+                                <div className={`agent-node-ring ${ring}`} style={glowStyle}></div>
+                                
+                                <div className="relative z-10 flex flex-col items-center justify-center">
+                                    <agent.icon className="w-8 h-8 text-quantum-white mb-1.5" />
+                                    <h3 className="font-bold text-sm text-quantum-white leading-tight">{agent.role.split(' ')[0]}</h3>
+                                    <p className="text-xs text-neural-gray-300 capitalize">{status}</p>
+                                </div>
+                            </div>
+                        </div>
                     );
                 })}
-            </svg>
-            
-            {/* Agent Cards */}
-            {AGENTS.map((agent, index) => (
-                <div key={agent.id}
-                     className={`absolute w-48 h-24 bg-neural-gray-800/80 rounded-lg border-2 p-3 flex flex-col justify-center text-center transition-all duration-500 ${getStatusStyles(statuses[agent.id])}`}
-                     style={positions[index]}>
-                    <div className="flex items-center justify-center gap-2">
-                        <agent.icon className="w-5 h-5 text-quantum-white" />
-                        <h3 className="font-bold text-sm text-quantum-white">{agent.role.split(' ')[0]}</h3>
-                    </div>
-                    <p className="text-xs text-neural-gray-200 capitalize mt-1">{statuses[agent.id] || 'dormant'}</p>
-                     {statuses[agent.id] === 'validating' && <div className="holographic-scan-line"></div>}
-                </div>
-            ))}
+            </div>
+
+            <div className="absolute bottom-10 text-center text-neural-gray-200">
+                <p className="text-lg font-bold">AI Agent Workflow is in Progress</p>
+                <p className="text-sm text-neural-gray-300">The multi-agent team is collaborating to generate your component.</p>
+            </div>
+
+            <button onClick={onCancel} className="absolute top-6 right-6 px-4 py-2 bg-neural-gray-800/80 text-neural-gray-200 rounded-lg hover:bg-neural-gray-700 transition-colors text-sm">
+                Cancel Generation
+            </button>
         </div>
-        <button onClick={onCancel} className="absolute bottom-10 px-6 py-2 bg-ai-red-error/80 text-white rounded-lg hover:bg-ai-red-error">
-            Cancel Generation
-        </button>
-      </div>
     );
 };
 

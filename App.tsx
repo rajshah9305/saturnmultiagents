@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect, useCallback, useRef } from 'react';
 import { Variant, AgentStatus, StyleDNA, AppState, Action } from './types';
-import { PROMPT_TEMPLATES, STYLE_DNA_LIBRARY, AGENTS } from './constants';
+import { PROMPT_TEMPLATES, STYLE_DNA_LIBRARY } from './constants';
 import { generateUiVariants, refineUiVariant } from './services/geminiService';
 import Header from './components/Header';
 import Stage from './components/Stage';
@@ -178,8 +178,9 @@ const App = () => {
             <div className="flex-grow flex flex-col overflow-hidden">
                 <Stage
                     variants={state.variants}
-                    selectedVariant={state.selectedVariantId}
-                    setSelectedVariant={(id) => dispatch({ type: 'SET_SELECTED_VARIANT', payload: id })}
+                    selectedVariantId={state.selectedVariantId}
+                    setSelectedVariantId={(id) => dispatch({ type: 'SET_SELECTED_VARIANT', payload: id })}
+                    isGenerating={state.workflowPhase === 'generating'}
                 />
                 <Console
                     prompt={state.prompt}
@@ -190,7 +191,7 @@ const App = () => {
                     setActiveStyleDna={(d) => dispatch({ type: 'SET_STYLE_DNA', payload: d })}
                     onGenerate={handleGenerate}
                     onRefine={handleRefine}
-                    isGenerating={state.workflowPhase === 'generating' || state.workflowPhase === 'refining'}
+                    isProcessing={state.workflowPhase === 'generating' || state.workflowPhase === 'refining'}
                     hasVariants={state.variants.length > 0}
                 />
             </div>

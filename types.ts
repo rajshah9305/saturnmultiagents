@@ -51,6 +51,7 @@ export interface StyleDNA {
   name: string;
   description: string;
   keywords: string;
+  gradient: string; // For visual representation
 }
 
 // Represents the entire application state, managed by a reducer.
@@ -79,20 +80,3 @@ export type Action =
   | { type: 'SET_STYLE_DNA'; payload: StyleDNA }
   | { type: 'SET_ERROR'; payload: string }
   | { type: 'CLEAR_ERROR' };
-
-// Represents a message in the chat console history.
-export interface ChatMessage {
-  id: string;
-  sender: 'user' | 'ai';
-  text: string;
-  timestamp: string;
-}
-
-// FIX: Added WorkflowLog type, which was used in WorkflowLogDisplay but not defined.
-// Represents a log entry in the workflow display.
-export interface WorkflowLog {
-  id: string;
-  type: 'info' | 'prompt' | 'output' | 'error' | 'system';
-  agentRole: AgentRole | 'User';
-  message: string;
-}

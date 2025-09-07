@@ -68,7 +68,7 @@ const generatePrompt = (prompt: string, styleDna: StyleDNA) => `
       - Write clean, modern React code using functional components and hooks.
       - Use Tailwind CSS for all styling. Do NOT use inline styles.
       - Create a self-contained component. All necessary HTML and styling must be included.
-      - For the 'preview', provide the complete HTML output of the component, including a root div and any necessary Tailwind classes for it to render correctly on a plain white background.
+      - For the 'preview', provide ONLY the raw HTML for the component's root element and its children. Do NOT include \`<html>\`, \`<head>\`, or \`<body>\` tags.
       - For the 'code', provide the complete React component as a string.
   4.  **QA & Metrics Agents:** Assign a novelty score (0.1-1.0) and an estimated accessibility score (1-100) for each variant. List any required npm dependencies (e.g., 'framer-motion', 'lucide-react').
   5.  **ID Generation**: Generate a unique short ID for each variant (e.g., 'v1_xyz').
@@ -93,7 +93,7 @@ const refinePrompt = (refinementRequest: string, styleDna: StyleDNA, currentVari
     **Agent Instructions:**
     1.  **Code Synthesis Engine:** Modify the provided React component code to incorporate the user's feedback.
     2.  **Maintain Consistency:** Ensure the refined component adheres to the original Style DNA.
-    3.  **Update Preview:** Generate the new HTML 'preview' for the updated component.
+    3.  **Update Preview:** Generate the new raw HTML 'preview' for the updated component. Do NOT include \`<html>\`, \`<head>\`, or \`<body>\` tags.
     4.  **Preserve ID:** The 'id' of the variant MUST remain "${currentVariant.id}".
     5.  **Re-evaluate Metrics:** Recalculate novelty and accessibility scores if the changes are significant.
 

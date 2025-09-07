@@ -5,6 +5,9 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Enterprise AI UI Component Generation Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Roboto+Mono&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
@@ -16,6 +19,8 @@
         --neural-gray-50: #f8fafc;
         --neural-gray-100: #f1f5f9;
         --neural-gray-200: #e2e8f0;
+        --neural-gray-300: #cbd5e1;
+        --neural-gray-500: #64748b;
         --neural-gray-700: #334155;
         --neural-gray-800: #1e293b;
         --neural-gray-900: #0f172a;
@@ -31,22 +36,29 @@
         /* Energy Gradients */
         --neural-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
         --energy-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --ai-glow: linear-gradient(135deg, var(--ai-blue-primary) 0%, var(--ai-purple-secondary) 100%);
       }
       
       body, #root {
         height: 100vh;
         width: 100vw;
         overflow: hidden;
-        font-family: 'Inter', sans-serif; /* A more modern font */
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .font-mono {
+        font-family: 'Roboto Mono', monospace;
       }
       
-      /* Webkit scrollbar styling for a consistent look */
+      /* Webkit scrollbar styling */
       ::-webkit-scrollbar { width: 8px; }
       ::-webkit-scrollbar-track { background: var(--neural-gray-800); }
       ::-webkit-scrollbar-thumb { background: var(--neural-gray-700); border-radius: 4px; }
       ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-      /* Animations */
+      /* Base Animations */
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -55,7 +67,7 @@
 
       @keyframes fadeOut {
         from { opacity: 1; transform: translateY(0); }
-        to { opacity: 0; transform: translateY(10px); }
+        to { opacity: 0; transform: translateY(-10px); }
       }
       .animate-fade-out { animation: fadeOut 0.5s ease-out forwards; }
       
@@ -65,39 +77,85 @@
       }
       .animate-quantum-pulse { animation: quantum-pulse 2s infinite; }
 
-      @keyframes neural-flow {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-      }
-      .animate-neural-flow {
-        background-size: 200% 200%;
-        animation: neural-flow 3s ease infinite;
+      /* Agent Workflow Redesign Animations & Styles */
+      .workflow-grid-bg {
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(200, 220, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(200, 220, 255, 0.05) 1px, transparent 1px);
+        background-size: 3rem 3rem;
+        mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+        animation: fadeIn 2s ease;
       }
       
-      @keyframes holographic-scan {
-        0% { transform: translateY(-100%); }
-        100% { transform: translateY(100%); }
-      }
-      .holographic-scan-line {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, var(--ai-cyan-accent), transparent);
-        animation: holographic-scan 3s infinite linear;
-        opacity: 0.7;
+      .agent-node {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
 
-      /* Neural line animation for AgentWorkflow */
-      @keyframes draw-line {
-        to { stroke-dashoffset: 0; }
+      .agent-node-core {
+        background-color: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--neural-gray-700);
+        transition: all 0.3s ease;
       }
-      .neural-line {
-        stroke-dasharray: 1000;
-        stroke-dashoffset: 1000;
-        animation: draw-line 1.5s ease-out forwards;
+      
+      .agent-node-ring {
+        position: absolute;
+        inset: -4px;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+        border: 1px solid;
+      }
+      
+      .agent-node.status-active .agent-node-core {
+        transform: scale(1.05);
+      }
+      
+      @keyframes node-breathing-glow {
+        0%, 100% { box-shadow: 0 0 12px, inset 0 0 4px; opacity: 0.8; }
+        50% { box-shadow: 0 0 24px, inset 0 0 8px; opacity: 1; }
+      }
+
+      .agent-glow {
+        animation: node-breathing-glow 2.5s infinite ease-in-out;
+      }
+
+      @keyframes data-flow-gradient {
+        0% { stroke-dashoffset: 200; }
+        100% { stroke-dashoffset: 0; }
+      }
+
+      .data-flow-path {
+        stroke-dasharray: 100 100;
+        animation: data-flow-gradient 2s linear infinite;
+      }
+
+      /* Style Matrix Animation */
+      .style-matrix-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .style-matrix-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Skeleton Loader Animation */
+      @keyframes pulse-bg {
+        0%, 100% { background-color: var(--neural-gray-200); }
+        50% { background-color: var(--neural-gray-300); }
+      }
+      .animate-pulse-bg {
+        animation: pulse-bg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      /* Metrics Bar Animation */
+      @keyframes fill-bar {
+        from { width: 0%; }
+        to { width: var(--bar-width, 0%); }
+      }
+      .animate-fill-bar {
+        animation: fill-bar 1s ease-out forwards;
       }
 
       /* Custom selection color */

@@ -62,23 +62,27 @@ export const STYLE_DNA_LIBRARY: StyleDNA[] = [
         name: 'Quantum Minimalism',
         description: 'Clean lines, ample whitespace, and subtle gradients.',
         keywords: 'minimalist, clean, modern, professional, subtle gradients, sharp, whitespace',
+        gradient: 'linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)',
     },
     {
         id: 'dna_holographic',
         name: 'Holographic Glass',
         description: 'Translucent surfaces with neon accents.',
         keywords: 'glassmorphism, acrylic, translucent, blur, neon, vibrant, futuristic, holographic',
+        gradient: 'linear-gradient(135deg, #ff00ff 0%, #00ffff 100%)',
     },
     {
         id: 'dna_brutalist',
         name: 'Neo-Brutalism',
         description: 'Bold typography, high contrast, and sharp edges.',
         keywords: 'brutalist, bold, high-contrast, sharp, blocky, raw, strong shadows',
+        gradient: 'linear-gradient(135deg, #333 0%, #555 100%)',
     },
     {
         id: 'dna_organic',
         name: 'Organic & Soft',
         description: 'Rounded corners, soft shadows, and natural tones.',
         keywords: 'organic, soft, rounded, friendly, approachable, natural, calm, material design',
+        gradient: 'linear-gradient(135deg, #a8e063 0%, #56ab2f 100%)',
     }
 ];
