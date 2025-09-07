@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Agent, AgentStatus } from '../types';
 
@@ -7,13 +8,17 @@ interface AgentCardProps {
 
 const getStatusStyles = (status: AgentStatus): { dot: string; text: string; pulse: boolean, card: string } => {
   switch (status) {
-    case AgentStatus.IDLE:
+    // FIX: Replaced AgentStatus enum with string literals
+    case 'idle':
       return { dot: 'bg-gray-500', text: 'text-gray-400', pulse: false, card: '' };
-    case AgentStatus.THINKING:
+    // FIX: Replaced AgentStatus enum with string literals
+    case 'thinking':
       return { dot: 'bg-yellow-400', text: 'text-yellow-300', pulse: true, card: 'border-yellow-500/50' };
-    case AgentStatus.WORKING:
+    // FIX: Replaced AgentStatus enum with string literals
+    case 'working':
       return { dot: 'bg-blue-400', text: 'text-blue-300', pulse: true, card: 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' };
-    case AgentStatus.COMPLETED:
+    // FIX: Replaced AgentStatus enum with string literals
+    case 'completed':
       return { dot: 'bg-green-500', text: 'text-green-400', pulse: false, card: 'border-green-500/50' };
     default:
       return { dot: 'bg-gray-500', text: 'text-gray-400', pulse: false, card: '' };
@@ -25,11 +30,10 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent }) => {
 
   return (
     <div className={`bg-gray-800 border border-gray-700 rounded-lg p-4 flex flex-col items-center text-center transition-all transform hover:scale-105 hover:border-indigo-500 ${card}`}>
-      <img
-        src={agent.avatar}
-        alt={agent.name}
-        className="w-16 h-16 rounded-full mb-3 border-2 border-gray-600"
-      />
+      {/* FIX: Replaced non-existent agent.avatar with the agent.icon component */}
+      <div className="w-16 h-16 rounded-full mb-3 border-2 border-gray-600 flex items-center justify-center">
+        <agent.icon className="w-8 h-8 text-white" />
+      </div>
       <h3 className="text-lg font-semibold text-white">{agent.name}</h3>
       <p className="text-sm text-indigo-400 mb-3">{agent.role}</p>
       <div className="flex items-center">

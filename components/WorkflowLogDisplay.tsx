@@ -1,4 +1,6 @@
+
 import React, { useRef, useEffect } from 'react';
+// FIX: Added WorkflowLog and AgentRole to types.ts to resolve import error.
 import { WorkflowLog, AgentRole } from '../types';
 import { UserIcon } from './icons/UserIcon';
 import { BotIcon } from './icons/BotIcon';
