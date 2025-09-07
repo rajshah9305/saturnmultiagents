@@ -1,0 +1,5 @@
+{
+  "name": "Saturn AI Code Generation",
+  "description": "A web application that simulates a multi-agent AI team for generating full-stack code. Inspired by the Saturn project, this app provides a user-friendly interface to input a project idea and watch as different AI agents collaborate to produce a technical plan and final code.",
+  "requestFramePermissions": []
+}
